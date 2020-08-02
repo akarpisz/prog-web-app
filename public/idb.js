@@ -1,5 +1,5 @@
 let db;
-let transaction = [];
+
 const dbReq = window.indexedDB.open("budgetList", 1);
 
 dbReq.onupgradeneeded = ({ target }) => {
@@ -30,7 +30,7 @@ const checkDatabase = () => {
   getAll.onsuccess = () => {
     if (getAll.result.length > 0) {
       console.log("getAll Success");
-      fetch("/api/transaction/", {
+      fetch("/api/transaction/bulk", {
         method: "POST",
         body: JSON.stringify(getAll.result),
         headers: {
@@ -52,7 +52,7 @@ const addItem = (data) => {
   console.log(data);
   const tx = db.transaction(["pending"], "readwrite");
   const objStore = tx.objectStore("pending");
-  objStore.add(record);
+  objStore.add(data);
 }
 
 window.addEventListener("online", checkDatabase);
