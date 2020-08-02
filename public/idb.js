@@ -5,7 +5,6 @@ const dbReq = window.indexedDB.open("budgetList", 1);
 dbReq.onupgradeneeded = ({ target }) => {
   db = target.result;
   const objStore = db.createObjectStore("pending", { autoIncrement: true });
-  objStore.createIndex("pending", "pending");
 };
 
 dbReq.onsuccess = (event) => {
@@ -38,7 +37,7 @@ const checkDatabase = () => {
             "Content-Type": "application/json"
           }
       })
-      .then((res)=>{res.json()})
+      .then(res=>res.json())
       .then(()=>{
           const tx = db.transaction(["pending"],"readwrite");
           const objStore = tx.objectStore("pending");
@@ -53,6 +52,12 @@ const addItem = (data) => {
   const tx = db.transaction(["pending"], "readwrite");
   const objStore = tx.objectStore("pending");
   objStore.add(data);
+  tx.oncomplete = function(){
+    console.log("entry stored");
+  }
+  tx.onerror = function(e){
+    alert("error" + e.target);
+  }
 }
 
 window.addEventListener("online", checkDatabase);
